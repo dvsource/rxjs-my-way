@@ -1,13 +1,8 @@
+const _ = require('lodash');
+
 const createObservable = (initialData) => {
   let currentData = initialData;
   const listners = new Map();
-
-  const next = (data) => {
-    currentData = data;
-    listners.forEach((listner) => {
-      callListner(currentData, listner);
-    });
-  };
 
   const callListner = (data, listner) => {
     const { next, err, complete } = listner;
@@ -23,7 +18,8 @@ const createObservable = (initialData) => {
     }
   };
 
-  const subscribe = (next, err, complete) => {
+  const createSubscription = (observer) => {
+    const { next, err, complete } = observer;
     listners.set(next, { next, err, complete });
     if (initialData) {
       callListner(initialData, { next, err, complete });
@@ -35,7 +31,21 @@ const createObservable = (initialData) => {
     };
   };
 
-  return { next, subscribe };
+  return {
+    next: (data) => {
+      currentData = data;
+      listners.forEach((listner) => {
+        callListner(currentData, listner);
+      });
+    },
+    subscribe: (observer) => {
+      if (_.isFunction(observer)) {
+        observer = { next: observer };
+      }
+
+      return createSubscription(observer);
+    },
+  };
 };
 
 // TEST
@@ -46,15 +56,14 @@ const subscription = observer.subscribe((data) => {
 });
 observer.next(1);
 observer.next(3);
-observer.subscribe(
-  (data) => {
+observer.subscribe({
+  next: (data) => {
     console.log(data);
   },
-  null,
-  () => {
+  complete: () => {
     console.log('Complete');
-  }
-);
+  },
+});
 subscription.unsubscribe();
 observer.next(6);
 observer.subscribe((data) => {
