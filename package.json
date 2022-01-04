@@ -1,0 +1,10 @@
+{
+  "name": "rxjs-my-way",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Viraj Kaushalye <virajk@codegen.net>",
+  "license": "MIT",
+  "dependencies": {
+    "lodash": "^4.17.21"
+  }
+}
