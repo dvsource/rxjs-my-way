@@ -5,20 +5,33 @@ const createObservable = (initialData) => {
   const next = (data) => {
     currentData = data;
     listners.forEach((listner) => {
-      listner(currentData);
+      callListner(currentData, listner);
     });
-    console.log(listners);
   };
 
-  const subscribe = (listner) => {
-    listners.push(listner);
+  const callListner = (data, listner) => {
+    const { next, err, complete } = listner;
+    try {
+      next(currentData);
+    } catch (e) {
+      if (err) {
+        err(e);
+      }
+    }
+    if (complete) {
+      complete();
+    }
+  };
+
+  const subscribe = (next, err, complete) => {
+    listners.push({ next, err, complete });
     if (initialData) {
-      listner(initialData);
+      callListner(initialData, { next, err, complete });
     }
     return {
       unsubscribe: () => {
         listners.splice(
-          listners.findIndex((_listner) => _listner === listner),
+          listners.findIndex((_listner) => _listner.next === next),
           1
         );
       },
@@ -36,9 +49,15 @@ const subscription = observer.subscribe((data) => {
 });
 observer.next(1);
 observer.next(3);
-observer.subscribe((data) => {
-  console.log(data);
-});
+observer.subscribe(
+  (data) => {
+    console.log(data);
+  },
+  null,
+  () => {
+    console.log('Complete');
+  }
+);
 subscription.unsubscribe();
 observer.next(6);
 observer.subscribe((data) => {
