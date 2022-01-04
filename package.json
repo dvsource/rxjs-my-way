@@ -4,6 +4,9 @@
   "main": "index.js",
   "author": "Viraj Kaushalye <virajk@codegen.net>",
   "license": "MIT",
+  "scripts": {
+    "play": "node ./src/app.js"
+  },
   "dependencies": {
     "lodash": "^4.17.21"
   }

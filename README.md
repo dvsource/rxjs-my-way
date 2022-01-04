@@ -19,9 +19,16 @@
 - <strong>Operators</strong>
 - <strong>Subject</strong>
 
+## Playground
+
+> `yarn play`
+
 ## TODO
 
-- [~] Initial README.md
+- [x] Initial README.md
+- [x] Subject API
+- [ ] Observer Pipe API
+- [ ] Operators
 
 ### Dependancies
 
