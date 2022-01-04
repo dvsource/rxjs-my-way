@@ -21,7 +21,9 @@
 
 ## Playground
 
-> `yarn play`
+```shell
+yarn play
+```
 
 ## TODO
 
@@ -33,3 +35,9 @@
 ### Dependancies
 
 - Lodash (source)[https://github.com/lodash/lodash]
+
+#### Install
+
+```shell
+yarn
+```
