@@ -1,4 +1,4 @@
-const createObservable = (initialData = []) => {
+const createObservable = (initialData) => {
   let currentData = initialData;
   const listners = [];
 
@@ -12,6 +12,9 @@ const createObservable = (initialData = []) => {
 
   const subscribe = (listner) => {
     listners.push(listner);
+    if (initialData) {
+      listner(initialData);
+    }
     return {
       unsubscribe: () => {
         listners.splice(
@@ -26,7 +29,7 @@ const createObservable = (initialData = []) => {
 };
 
 // TEST
-const observer = createObservable();
+const observer = createObservable(11);
 
 const subscription = observer.subscribe((data) => {
   console.log(data);
