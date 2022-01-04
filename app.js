@@ -1,10 +1,10 @@
 const _ = require('lodash');
 
-const createObservable = (initialData) => {
+const createSubject = (initialData) => {
   let currentData = initialData;
   const listners = new Map();
 
-  const callListner = (data, listner) => {
+  const _callListner = (data, listner) => {
     const { next, err, complete } = listner;
     try {
       next(data);
@@ -18,11 +18,11 @@ const createObservable = (initialData) => {
     }
   };
 
-  const createSubscription = (observer) => {
-    const { next, err, complete } = observer;
-    listners.set(next, { next, err, complete });
+  const _createSubscription = (observer) => {
+    const { next } = observer;
+    listners.set(next, observer);
     if (initialData) {
-      callListner(initialData, { next, err, complete });
+      _callListner(initialData, observer);
     }
     return {
       unsubscribe: () => {
@@ -35,28 +35,32 @@ const createObservable = (initialData) => {
     next: (data) => {
       currentData = data;
       listners.forEach((listner) => {
-        callListner(currentData, listner);
+        _callListner(currentData, listner);
       });
     },
-    subscribe: (observer) => {
-      if (_.isFunction(observer)) {
-        observer = { next: observer };
-      }
+    asObservable: () => {
+      return {
+        subscribe: (observer) => {
+          if (_.isFunction(observer)) {
+            observer = { next: observer };
+          }
 
-      return createSubscription(observer);
+          return _createSubscription(observer);
+        },
+      };
     },
   };
 };
 
 // TEST
-const observer = createObservable(11);
+const subject = createSubject(11);
 
-const subscription = observer.subscribe((data) => {
+const subscription = subject.asObservable().subscribe((data) => {
   console.log(data);
 });
-observer.next(1);
-observer.next(3);
-observer.subscribe({
+subject.next(1);
+subject.next(3);
+subject.asObservable().subscribe({
   next: (data) => {
     console.log(data);
   },
@@ -65,9 +69,9 @@ observer.subscribe({
   },
 });
 subscription.unsubscribe();
-observer.next(6);
-observer.subscribe((data) => {
+subject.next(6);
+subject.asObservable().subscribe((data) => {
   console.log(data);
 });
 
-observer.next(10);
+subject.next(10);
