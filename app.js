@@ -1,6 +1,6 @@
 const createObservable = (initialData) => {
   let currentData = initialData;
-  const listners = [];
+  const listners = new Map();
 
   const next = (data) => {
     currentData = data;
@@ -12,7 +12,7 @@ const createObservable = (initialData) => {
   const callListner = (data, listner) => {
     const { next, err, complete } = listner;
     try {
-      next(currentData);
+      next(data);
     } catch (e) {
       if (err) {
         err(e);
@@ -24,16 +24,13 @@ const createObservable = (initialData) => {
   };
 
   const subscribe = (next, err, complete) => {
-    listners.push({ next, err, complete });
+    listners.set(next, { next, err, complete });
     if (initialData) {
       callListner(initialData, { next, err, complete });
     }
     return {
       unsubscribe: () => {
-        listners.splice(
-          listners.findIndex((_listner) => _listner.next === next),
-          1
-        );
+        listners.delete(next);
       },
     };
   };
