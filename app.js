@@ -50,6 +50,14 @@ const createSubject = (initialValue) => {
     });
   };
 
+  const subscribe = (observer) => {
+    if (_.isFunction(observer)) {
+      observer = { next: observer };
+    }
+
+    return _createSubscription(observer);
+  };
+
   return {
     getValue: () => {
       return _value;
@@ -74,19 +82,12 @@ const createSubject = (initialValue) => {
       _callCompleteCallbacks();
       isComplted = true;
     },
+    subscribe,
     unsubscribe: () => {
       _listners.clear();
     },
     asObservable: () => {
-      return {
-        subscribe: (observer) => {
-          if (_.isFunction(observer)) {
-            observer = { next: observer };
-          }
-
-          return _createSubscription(observer);
-        },
-      };
+      return { subscribe };
     },
   };
 };
@@ -109,7 +110,7 @@ subject.asObservable().subscribe({
 });
 subscription.unsubscribe();
 subject.next(6);
-subject.asObservable().subscribe((data) => {
+subject.subscribe((data) => {
   console.log(data);
 });
 // subject.complete();
