@@ -19,12 +19,6 @@
 - <strong>Operators</strong>
 - <strong>Subject</strong>
 
-## Playground
-
-```shell
-yarn play
-```
-
 ## TODO
 
 - [x] Initial README.md
@@ -40,4 +34,10 @@ yarn play
 
 ```shell
 yarn
+```
+
+#### Run
+
+```shell
+yarn play
 ```
