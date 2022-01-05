@@ -34,7 +34,7 @@ yarn play
 
 ### Dependancies
 
-- Lodash (source)[https://github.com/lodash/lodash]
+- Lodash [source](https://github.com/lodash/lodash)
 
 #### Install
 
